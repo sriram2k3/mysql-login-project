@@ -1,0 +1,76 @@
+# importing required library 
+import mysql.connector
+import tkinter as tk
+from tkinter import *
+def submitact():
+    username = e1.get()
+    password = e2.get()
+    print(f"Entered Username is {username} and password is {password}")
+    login(username,password)
+
+def login(username,password):
+    if password:
+        dataBase = mysql.connector.connect(
+					    host = "localhost",
+					    user = "root",
+					    passwd = "2k3#Oppoa3s*",
+					    database = "work" ) 
+
+        # preparing a cursor object 
+        mouse = dataBase.cursor() 
+        values = []
+        query = "SELECT * FROM CREDENTIALS WHERE USERNAME = %s AND PASSWORD = %s"
+        values = (username, password)
+    
+    else:
+        dataBase = mysql.connector.connect(
+					    host = "localhost",
+					    user = "root",
+					    database = "work" ) 
+
+        # preparing a cursor object 
+        mouse = dataBase.cursor() 
+        values= []
+        query = "SELECT * FROM CREDENTIALS WHERE USERNAME = %s AND PASSWORD = %s"
+        values = (username,password)
+
+    try:
+
+        mouse.execute(query, values)
+        res = mouse.fetchone()
+        if res:
+            label4 = Label(frame4, text = "Successfully Logged in")
+            label4.pack()
+            print("Successfully Logged in")
+        else:
+            print("Incorrect username or password")
+            label4 = Label(frame4, text="Incorrect username or password")
+            label4.pack()
+    except mysql.connector.Error as e:
+        print(f"Error: {e}")
+    finally:
+        dataBase.close()
+
+root = Tk()
+root.geometry("300x300")
+root.title("LOGIN PAGE")
+frame1 = Frame(root)
+frame2= Frame(root)
+frame3= Frame(root)
+frame4 = Frame(root)
+frame1.pack()
+frame2.pack()
+frame3.pack()
+frame4.pack()
+label1 = Label(frame1, text= "Username").grid(row =0)
+e1 = Entry(frame1)
+e1.grid(row= 0, column= 1)
+
+label2 = Label(frame2, text= "Password").grid(row =1)
+e2 = Entry(frame2)
+e2.grid(row= 1, column= 1)
+
+submit = Button(frame3, text="Submit", command= submitact)
+submit.pack()
+
+root.mainloop()
